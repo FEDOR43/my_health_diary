@@ -1,17 +1,19 @@
 [tool.poetry]
-name = "my-health-diary"
+name = "my_health_diary"
 version = "0.1.0"
 description = "The project allows you to keep a diary of your health. You can add appointments with doctors, test results, health observations, comments about attending doctors, etc."
 authors = ["Fedorov Anton <afedorov43@gmail.com>"]
-readme = "README.md"
-packages = [{include = "my_health_diary"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+Django = "^4.1.7"
+gunicorn = "^20.1.0"
+celery = "^5.2.7"
 python-dotenv = "^1.0.0"
 pre-commit = "^3.2.1"
 
+[tool.poetry.dev-dependencies]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
