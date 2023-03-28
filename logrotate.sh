@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [ ! -d '/home/web/my_health_diary/logs' ]; then
+    mkdir /home/web/my_health_diary/logs
+#   chown root /var/log/my_health_diary
+fi
+
 if [ ! -d '/var/log/my_health_diary' ]; then
     mkdir /var/log/my_health_diary
    chown root /var/log/my_health_diary
