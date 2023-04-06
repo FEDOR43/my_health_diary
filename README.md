@@ -14,4 +14,4 @@ sudo chmod ugo+x init_dev.sh
 
 sudo ./init_dev.sh
 
-sudo chown -R user:user /home/web/my_health_diary/
+sudo chown -R web:web /home/web/my_health_diary/
