@@ -21,6 +21,6 @@ services:
     volumes:
       - ./static/:/srv/app/static
       - ./media/:/srv/app/media
-#      - ./database:/srv/app/database
+      - ./database:/srv/app/database
       - /var/log/my_health_diary/:/srv/app/logs/
 #    network_mode: host
