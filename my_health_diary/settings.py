@@ -47,8 +47,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_celery_beat",
     "debug_toolbar",
+    "post_office",
     "rest_framework",
+    "apps.core",
 ]
+
+AUTH_USER_MODEL = "core.User"
 
 MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
