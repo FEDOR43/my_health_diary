@@ -25,7 +25,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-j6n+b6_bdf5n_b72r6ktsiw1z82bp=)@759xpepimf0q^pn_!#"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.getenv("DEBUG").lower() == "true":
@@ -100,8 +100,8 @@ DATABASES = {
 CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 # CELERY settings for localhost
-# CELERY_BROKER_URL = "redis://localhost:6379/4"
-# CELERY_RESULT_BACKEND = "redis://localhost:6379/4"
+# CELERY_BROKER_URL = "redis://localhost:6379/0"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
 CACHES = {
