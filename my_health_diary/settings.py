@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import datetime
 import os
 from pathlib import Path
 
@@ -44,10 +45,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_celery_beat",
+    "debug_toolbar",
+    "post_office",
     "rest_framework",
+    "apps.core",
 ]
 
+AUTH_USER_MODEL = "core.User"
+
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -86,6 +94,37 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": f"{BASE_DIR}/database/" + "db.sqlite3",
     },
+}
+
+# CELERY settings
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+# CELERY settings for localhost
+# CELERY_BROKER_URL = "redis://localhost:6379/4"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379/4"
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/0",
+        # "LOCATION": "redis://127.0.0.1:6379/0",
+        "TIMEOUT": 60 * 15,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+}
+
+POST_OFFICE = {
+    "DEFAULT_PRIORITY": "now",
+    "CELERY_ENABLED": True,
+    "MESSAGE_ID_ENABLED": True,
+    "MAX_RETRIES": 5,
+    "RETRY_INTERVAL": datetime.timedelta(
+        minutes=15,
+    ),  # Schedule to be retried 15 minutes later
+    "LOG_LEVEL": 2,
 }
 
 LOGGING = {
@@ -179,9 +218,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru-ru"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -197,6 +236,7 @@ STATIC_URL = "/static/"
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
+EMAIL_BACKEND = "post_office.EmailBackend"
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
