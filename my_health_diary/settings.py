@@ -67,6 +67,17 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "my_health_diary.urls"
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://www.f-programs.ru",
+    "http://f-programs.ru",
+    "http://127.0.0.1",
+    "http://localhost",
+    "https://www.f-programs.ru",
+    "https://f-programs.ru",
+    "https://127.0.0.1",
+    "https://localhost",
+]
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
