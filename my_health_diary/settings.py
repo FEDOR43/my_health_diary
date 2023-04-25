@@ -25,7 +25,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-j6n+b6_bdf5n_b72r6ktsiw1z82bp=)@759xpepimf0q^pn_!#"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.getenv("DEBUG").lower() == "true":
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "post_office",
     "rest_framework",
     "apps.core",
+    "apps.authentication",
 ]
 
 AUTH_USER_MODEL = "core.User"
@@ -66,6 +67,17 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "my_health_diary.urls"
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://www.f-programs.ru",
+    "http://f-programs.ru",
+    "http://127.0.0.1",
+    "http://localhost",
+    "https://www.f-programs.ru",
+    "https://f-programs.ru",
+    "https://127.0.0.1",
+    "https://localhost",
+]
 
 TEMPLATES = [
     {
@@ -100,8 +112,8 @@ DATABASES = {
 CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 # CELERY settings for localhost
-# CELERY_BROKER_URL = "redis://localhost:6379/4"
-# CELERY_RESULT_BACKEND = "redis://localhost:6379/4"
+# CELERY_BROKER_URL = "redis://localhost:6379/0"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
 CACHES = {
@@ -221,6 +233,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "ru-ru"
 
 TIME_ZONE = "Europe/Moscow"
+
+DATE_INPUT_FORMATS = ("%d.%m.%Y",)  # '10.12.1985'
 
 USE_I18N = True
 

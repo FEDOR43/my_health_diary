@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User
+from apps.core.models import User
+from apps.core.models import UserProfile
 
 
 @admin.register(User)
@@ -37,9 +38,6 @@ class CoreUserAdmin(UserAdmin):
                     "last_name",
                     "first_name",
                     "middle_name",
-                    "sex",
-                    "birthday",
-                    "avatar",
                     "timezone",
                 ),
                 "classes": ("extrapretty", "wide"),
@@ -60,4 +58,18 @@ class CoreUserAdmin(UserAdmin):
             },
         ),
         ("Важные даты", {"fields": ("last_login", "joined")}),
+    )
+
+
+@admin.register(UserProfile)
+class CoreUserProfileAdmin(admin.ModelAdmin):
+    list_display = ("user", "birthday", "age")
+    list_filter = ("age",)
+    ordering = ()
+    search_fields = (
+        "user__first_name",
+        "user__last_name",
+        "user__middle_name",
+        "user__email",
+        "user__phone",
     )
