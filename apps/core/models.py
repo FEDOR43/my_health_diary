@@ -1,6 +1,8 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+from django.core.validators import MaxValueValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 from timezone_field import TimeZoneField
 
@@ -46,11 +48,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     Кастомная модель пользователя.
     """
 
-    class Sex(models.TextChoices):
-        MALE = "MALE", "мужской"
-        FEMALE = "FEMALE", "женский"
-        UNDEFINED = "UNDEFINED", "не определено"
-
     email = models.EmailField("Электронная почта", unique=True)
     is_email_confirmed = models.BooleanField(
         "Электронная почта подтверждена",
@@ -71,21 +68,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField("Имя", max_length=30)
     last_name = models.CharField("Фамилия", max_length=30)
     middle_name = models.CharField("Отчество", max_length=30, blank=True)
-    sex = models.CharField(
-        "Пол",
-        max_length=9,
-        default=Sex.UNDEFINED,
-        choices=Sex.choices,
-    )
-    birthday = models.DateField("День рождения", blank=True, null=True)
-    age = models.DateField("Возраст", blank=True, null=True)
     timezone = TimeZoneField("Часовой пояс", default="Europe/Moscow")
     agreement = models.BooleanField("Согласие на обработку данных", default=False)
     joined = models.DateTimeField("Дата и время регистрации", auto_now_add=True)
     updated = models.DateTimeField("Дата и время обновления", auto_now=True)
     is_active = models.BooleanField("Активный", default=False)
     is_staff = models.BooleanField("Доступ в админ. панель", default=False)
-    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
 
     objects = UserManager()
 
@@ -127,5 +115,69 @@ class User(AbstractBaseUser, PermissionsMixin):
             if hasattr(self, field):
                 if field == "phone":
                     value = normalize_phone(value)
+                setattr(self, field, value)
+        self.save()
+
+
+class UserProfile(models.Model):
+    class Sex(models.TextChoices):
+        MALE = "MALE", "мужской"
+        FEMALE = "FEMALE", "женский"
+        UNDEFINED = "UNDEFINED", "не определено"
+
+    user = models.OneToOneField(
+        User,
+        verbose_name="Пользователь",
+        on_delete=models.CASCADE,
+    )
+    sex = models.CharField(
+        "Пол",
+        max_length=9,
+        default=Sex.UNDEFINED,
+        choices=Sex.choices,
+    )
+    birthday = models.DateField("День рождения", blank=True, null=True)
+    # BIRTH_YEAR_CHOICES = [year for year in range(1950, datetime.date.today().year + 1, 1)]
+    age = models.IntegerField(
+        "Возраст",
+        validators=[
+            MinValueValidator(0, "Возраст не может быть меньше 0 лет"),
+            MaxValueValidator(100, "Возраст не может быть больше 100 лет"),
+        ],
+        blank=True,
+        null=True,
+    )
+    height = models.IntegerField(
+        "Рост",
+        help_text="Введите Ваш рост в см.",
+        validators=[
+            MinValueValidator(40, "Рост не может быть меньше 40 см"),
+            MaxValueValidator(300, "Рост не может быть больше 300 см"),
+        ],
+        blank=True,
+        null=True,
+    )
+    weight = models.IntegerField(
+        "Вес",
+        help_text="Введите Ваш вес в кг.",
+        validators=[
+            MinValueValidator(1, "Вес не может быть меньше 1 кг"),
+            MaxValueValidator(300, "Вес не может быть больше 300 кг"),
+        ],
+        blank=True,
+        null=True,
+    )
+    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Профиль пользователя"
+        verbose_name_plural = "Профили пользователей"
+
+    def update(self, **kwargs):
+        """
+        Метод обновляет объект профиля пользователя.
+        """
+        for field, value in kwargs.items():
+            if hasattr(self, field):
                 setattr(self, field, value)
         self.save()

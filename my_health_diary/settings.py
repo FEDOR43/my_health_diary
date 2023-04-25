@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "post_office",
     "rest_framework",
     "apps.core",
+    "apps.authentication",
 ]
 
 AUTH_USER_MODEL = "core.User"
@@ -232,6 +233,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "ru-ru"
 
 TIME_ZONE = "Europe/Moscow"
+
+DATE_INPUT_FORMATS = ("%d.%m.%Y",)  # '10.12.1985'
 
 USE_I18N = True
 
